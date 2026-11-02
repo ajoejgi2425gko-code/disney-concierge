@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173f3a">
+  <meta name="description" content="希望を選ぶだけで、東京ディズニーリゾートの楽しみ方をAIに相談する専用プロンプトを作成します。">
+  <title>ディズニー攻略コンシェルジュ</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <header class="hero">
+    <div class="brand"><span class="brand-mark">✦</span><span>ディズニー攻略コンシェルジュ</span></div>
+    <p class="eyebrow">YOUR PERSONAL DISNEY PLANNER</p>
+    <h1>次のパークを、<br><em>もっと自由に。</em></h1>
+    <p class="hero-copy">希望を選ぶだけ。あなたのグループに合った、無理のないパークの楽しみ方をAIに相談できます。</p>
+    <div class="pills"><span>✓ 登録不要</span><span>✓ 好きなAIを選べる</span><span>✓ スマホ対応</span></div>
+  </header>
+
+  <main class="wrap">
+    <form id="planner-form">
+      <section class="panel">
+        <div class="section-heading"><span class="step">01</span><div><h2>パークと日程</h2><p>決まっている範囲だけ入力してください。</p></div></div>
+        <div class="grid two">
+          <label>行きたいパーク
+            <select id="park">
+              <option value="東京ディズニーランド">東京ディズニーランド</option>
+              <option value="東京ディズニーシー">東京ディズニーシー</option>
+              <option value="ランドとシーの両方（別日）">ランドとシーの両方（別日）</option>
+              <option value="まだ決めていない">まだ決めていない</option>
+            </select>
+          </label>
+          <label>来園日（未定でもOK）
+            <input id="visitDate" type="date">
+          </label>
+          <label>入園したい時間
+            <select id="arrival">
+              <option>開園直後を目指す</option><option>午前中</option><option>お昼ごろ</option><option>午後から</option><option>まだ決めていない</option>
+            </select>
+          </label>
+          <label>退園したい時間
+            <select id="leave">
+              <option>閉園まで楽しみたい</option><option>夕方ごろ</option><option>夜のショー後</option><option>指定時刻がある</option><option>まだ決めていない</option>
+            </select>
+          </label>
+        </div>
+        <label id="leave-time-wrap" class="hidden">退園時刻の希望
+          <input id="leaveTime" type="time">
+        </label>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading"><span class="step">02</span><div><h2>一緒に行く人</h2><p>年齢や人数に合わせて、無理のない提案にします。</p></div></div>
+        <div class="grid two">
+          <label>大人
+            <input id="adults" type="number" min="0" max="20" value="2">
+          </label>
+          <label>子ども
+            <input id="children" type="number" min="0" max="20" value="1">
+          </label>
+          <label class="full">子どもの年齢（複数の場合は「5歳、8歳」のように入力）
+            <input id="ages" type="text" placeholder="例：5歳">
+          </label>
+          <label class="full">同行者について（任意）
+            <input id="companions" type="text" placeholder="例：祖父母も一緒、ベビーカー利用、身長制限が気になる">
+          </label>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading"><span class="step">03</span><div><h2>楽しみたいこと</h2><p>複数選択できます。優先したいことを教えてください。</p></div></div>
+        <div class="choices">
+          <label class="choice"><input type="checkbox" name="interests" value="アトラクションをたくさん楽しみたい" checked><span>アトラクション</span></label>
+          <label class="choice"><input type="checkbox" name="interests" value="ショー・パレードを楽しみたい"><span>ショー・パレード</span></label>
+          <label class="choice"><input type="checkbox" name="interests" value="キャラクターグリーティングを楽しみたい"><span>キャラクター</span></label>
+          <label class="choice"><input type="checkbox" name="interests" value="食事やスイーツを楽しみたい"><span>食事・スイーツ</span></label>
+          <label class="choice"><input type="checkbox" name="interests" value="写真撮影やパークの景色を楽しみたい"><span>写真・景色</span></label>
+          <label class="choice"><input type="checkbox" name="interests" value="買い物を楽しみたい"><span>買い物</span></label>
+          <label class="choice"><input type="checkbox" name="interests" value="子どもが楽しめる体験を優先したい"><span>子ども向け体験</span></label>
+          <label class="choice"><input type="checkbox" name="interests" value="ゆったりと雰囲気を楽しみたい"><span>ゆったり過ごす</span></label>
+        </div>
+        <label class="top-gap">絶対に体験したいこと・施設（任意）
+          <textarea id="mustDo" rows="2" placeholder="例：美女と野獣、ソアリン、見たいパレードなど"></textarea>
+        </label>
+        <label>避けたいこと・苦手なこと（任意）
+          <textarea id="avoid" rows="2" placeholder="例：絶叫系、暗い場所、長時間待ち、歩きすぎ"></textarea>
+        </label>
+      </section>
+
+      <section class="panel">
+        <div class="section-heading"><span class="step">04</span><div><h2>回り方とDPAの希望</h2><p>効率重視か、ゆったり重視かを選べます。</p></div></div>
+        <div class="grid two">
+          <label>当日のペース
+            <select id="pace"><option>効率よくたくさん回りたい</option><option selected>無理のない標準ペース</option><option>休憩多めでゆったり</option><option>子ども・同行者の体力を最優先</option></select>
+          </label>
+          <label>DPA（ディズニー・プレミアアクセス）の利用
+            <select id="dpa"><option>できれば利用せずに楽しみたい</option><option selected>必要なものだけ予算内で利用したい</option><option>待ち時間短縮のため積極的に利用したい</option><option>DPAの仕組みも含めて相談したい</option><option>まだ決めていない</option></select>
+          </label>
+          <label>チケット・予算について
+            <select id="budget"><option>特に決めていない</option><option>できるだけ費用を抑えたい</option><option>多少費用がかかっても満足度重視</option><option>予算を決めている</option></select>
+          </label>
+          <label>食事の希望
+            <select id="meal"><option>その場で混雑を見て決めたい</option><option>レストランを事前に計画したい</option><option>手軽に短時間で済ませたい</option><option>食事も楽しみの中心にしたい</option><option>特に希望なし</option></select>
+          </label>
+        </div>
+        <label>補足・自由な希望（任意）
+          <textarea id="notes" rows="3" placeholder="例：久しぶりの来園なので基本から教えてほしい、誕生日のお祝い、雨予報が心配"></textarea>
+        </label>
+      </section>
+
+      <section class="panel final-panel">
+        <div class="section-heading"><span class="step">05</span><div><h2>AIに相談する</h2><p>入力内容から、あなた専用の相談文を作成します。</p></div></div>
+        <button type="button" class="primary" id="generate">AIへの相談文を作成する <span>↓</span></button>
+        <div id="result-area" class="result-area hidden">
+          <div class="result-title"><h3>あなた専用の相談プロンプト</h3><span class="status">作成済み</span></div>
+          <textarea id="prompt" rows="16" readonly aria-label="生成された相談プロンプト"></textarea>
+          <div class="actions">
+            <button type="button" class="secondary" id="copy">文章をコピー</button>
+            <button type="button" class="secondary" id="share">共有する</button>
+          </div>
+          <h3 class="ai-title">使いたいAIを選んでください</h3>
+          <div class="ai-links">
+            <a class="ai-card" href="https://chatgpt.com/" target="_blank" rel="noopener"><span class="ai-icon">✳</span><span><b>ChatGPT</b><small>OpenAI</small></span><span class="arrow">↗</span></a>
+            <a class="ai-card" href="https://gemini.google.com/" target="_blank" rel="noopener"><span class="ai-icon gemini">✦</span><span><b>Gemini</b><small>Google</small></span><span class="arrow">↗</span></a>
+            <a class="ai-card" href="https://copilot.microsoft.com/" target="_blank" rel="noopener"><span class="ai-icon copilot">◈</span><span><b>Microsoft Copilot</b><small>Microsoft</small></span><span class="arrow">↗</span></a>
+          </div>
+          <p class="hint">コピーした文章を、選んだAIのチャット欄に貼り付けて送信してください。AIへの自動送信は行いません。</p>
+        </div>
+      </section>
+    </form>
+    <footer><p>ディズニー攻略コンシェルジュ</p><small>このツールは相談文を作成します。営業時間・運営状況・販売内容・待ち時間などは、来園前と当日に公式情報で確認してください。</small></footer>
+  </main>
+  <div id="toast" role="status" aria-live="polite"></div>
+  <script src="./app.js"></script>
+</body>
+</html>
